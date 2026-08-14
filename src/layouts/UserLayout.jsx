@@ -11,7 +11,7 @@ const UserLayout = () => {
   const lightBg =
     isSpark || isYatrasanghi || isMannaBakery
       ? "#ffffff"
-      : "rgba(245,242,234,0.88)";
+      : "#FFFFFF";
 
   return (
     <div>

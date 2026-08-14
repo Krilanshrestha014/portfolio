@@ -3,7 +3,7 @@ import Reveal from "../Reusable/Reveal";
 import { useCursor } from "../../context/CursorContext";
 
 const ABOUT_WORDS =
-  "I'm Krilan Bata Shrestha, a UI/UX Designer creating digital experiences where user needs, business goals, and thoughtful design come together. I believe simplicity creates meaningful experiences.".split(
+  "I'm a UI/UX Designer creating digital experiences where user needs, business goals, and thoughtful design come together. I believe simplicity creates meaningful experiences.".split(
     /\s+/
   );
 
@@ -34,55 +34,22 @@ const About = forwardRef(function About(_props, ref) {
     <section
       id="about"
       ref={ref}
-      className="relative py-[100px] sm:py-[120px]"
-      style={{ background: "var(--dark)", color: "var(--on-dark)" }}
-      onMouseEnter={() => setCursor((c) => ({ ...c, onDark: true }))}
+      className="relative pt-0 pb-[163px]"
+      style={{ background: "#ffffff", color: "#0d0c0a" }}
+      onMouseEnter={() => setCursor((c) => ({ ...c, onDark: false }))}
       onMouseLeave={() => setCursor((c) => ({ ...c, onDark: false }))}
     >
       <div className="max-w-[1240px] mx-auto px-6 sm:px-10 md:px-16">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 pt-10 border-t" style={{ borderColor: "var(--line-dark)" }}>
-          <Reveal className="stat">
-            <span className="block font-bold text-[clamp(2.4rem,4.6vw,3.4rem)]" style={{ color: "var(--cream)" }}>
-              4
-            </span>
-            <span className="block mt-2.5 text-[13px]" style={{ color: "var(--muted)" }}>
-              Years of experience
-            </span>
-          </Reveal>
-          <Reveal delay={80} className="stat">
-            <span className="block font-bold text-[clamp(2.4rem,4.6vw,3.4rem)]" style={{ color: "var(--cream)" }}>
-              5+
-            </span>
-            <span className="block mt-2.5 text-[13px]" style={{ color: "var(--muted)" }}>
-              Projects shipped
-            </span>
-          </Reveal>
-          <Reveal delay={160} className="stat">
-            <span className="block font-bold text-[clamp(2.4rem,4.6vw,3.4rem)]" style={{ color: "var(--cream)" }}>
-              5+
-            </span>
-            <span className="block mt-2.5 text-[13px]" style={{ color: "var(--muted)" }}>
-              Happy clients
-            </span>
-          </Reveal>
-        </div>
 
-        <div className="mt-[90px] sm:mt-[130px] max-w-[900px]">
-          <Reveal
-            as="div"
-            className="flex items-center gap-3 text-[12px] tracking-[0.18em] mb-[34px]"
-            style={{ color: "var(--muted)" }}
-          >
-            <span className="w-[22px] h-px" style={{ background: "var(--muted)" }} /> ABOUT
-          </Reveal>
+        <div className="max-w-[900px] mx-auto text-center">
           <p
             ref={aboutTextRef}
-            className="font-medium leading-[1.42] tracking-tight text-[clamp(1.5rem,3.4vw,2.4rem)]"
+            className="font-medium leading-[1.42] tracking-tight text-[40px]"
           >
             {ABOUT_WORDS.map((w, i) => (
               <span
                 key={i}
-                className={`about-word ${aboutLit ? "lit" : ""}`}
+                className={`about-word-light ${aboutLit ? "lit" : ""}`}
                 style={{ transitionDelay: aboutLit ? `${i * 40}ms` : "0ms" }}
               >
                 {w}{" "}
@@ -91,6 +58,16 @@ const About = forwardRef(function About(_props, ref) {
           </p>
         </div>
       </div>
+
+      <style>{`
+        .about-word-light {
+          color: rgba(13, 12, 10, 0.32);
+          transition: color 0.5s ease;
+        }
+        .about-word-light.lit {
+          color: #0d0c0a;
+        }
+      `}</style>
     </section>
   );
 });

@@ -12,8 +12,6 @@ import FooterCTA from "../Home/FooterCta";
 
 export default function Footer({
   name = "Krilan Bata Shrestha",
-  role = "UI / UX Designer",
-  logo = "KRILAN",
   year = new Date().getFullYear(),
   email = "krilanshrestha@gmail.com",
   resumeHref = "/resume.pdf",
@@ -28,8 +26,6 @@ export default function Footer({
           <span>
             © {year} {name}
           </span>
-          <span className="font-bold tracking-[0.14em] text-[#16150f]">{logo}</span>
-          <span>{role}</span>
         </div>
       </div>
     </footer>
