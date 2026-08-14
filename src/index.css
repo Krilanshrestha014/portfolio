@@ -1,0 +1,91 @@
+@import "tailwindcss";
+@import url('https://api.fontshare.com/v2/css?f[]=switzer@400,500,700&display=swap');
+
+:root{
+  --cream:#f5f2ea;
+  --dark:#0d0c0a;
+  --ink:#16150f;
+  --muted:#8f8c81;
+  --muted-2:#6f6c62;
+  --on-dark-dim:#5c5a53;
+  --on-dark:#eceae1;
+  --accent:#c07a45;
+  --line:rgba(22,21,15,0.12);
+  --line-dark:rgba(245,242,234,0.12);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: 'Switzer', sans-serif;
+  color: var(--ink);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .display {
+  font-family: 'Switzer', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 0.98;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--cream);
+}
+
+/* ---------- grain overlay ---------- */
+.grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grainShift 8s steps(8) infinite;
+}
+@keyframes grainShift {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-60px, -40px); }
+}
+
+/* ---------- custom cursor ---------- */
+.cursor {
+  transition: width .35s cubic-bezier(.16,.8,.24,1), height .35s cubic-bezier(.16,.8,.24,1),
+              background .35s cubic-bezier(.16,.8,.24,1), border-color .35s cubic-bezier(.16,.8,.24,1);
+}
+.cursor::after {
+  content: '';
+  position: absolute;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--ink);
+  mix-blend-mode: difference;
+}
+.cursor.hovering::after { opacity: 0; }
+
+@media (hover: none), (pointer: coarse) {
+  .cursor { display: none !important; }
+}
+
+/* ---------- hero line reveal ---------- */
+.hero-line { overflow: hidden; display: block; }
+.hero-line span {
+  display: inline-block;
+  transform: translateY(110%);
+  transition: transform 1s cubic-bezier(.16,.8,.24,1);
+}
+.hero-line.loaded span { transform: translateY(0); }
+
+/* ---------- reveal utility ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  filter: blur(6px);
+  transition: opacity .9s cubic-bezier(.16,.8,.24,1), transform .9s cubic-bezier(.16,.8,.24,1), filter .9s cubic-bezier(.16,.8,.24,1);
+}
+.reveal.in { opacity: 1; transform: translateY(0); filter: blur(0); }
+
+/* ---------- about word reveal ---------- */
+.about-word { color: var(--on-dark-dim); transition: color .5s ease; }
+.about-word.lit { color: var(--on-dark); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
