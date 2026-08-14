@@ -1,46 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-/**
- * Site header / navbar — faithful React + Tailwind port.
- *
- * Behaviour preserved from the original:
- *  - Fixed, blurred header that fades between a light (cream) and dark (ink)
- *    background+text theme depending on which page section is currently
- *    behind it (sampled at a fixed point just below the header).
- *  - Two small corner dots (top-left / top-right) that fade with the theme.
- *  - Hamburger menu button that morphs into an "X" and opens a full-screen
- *    mobile nav with staggered link reveal.
- *  - Magnetic "Let's chat" link that nudges toward the cursor on hover.
- *
- * New:
- *  - `forceTheme` prop ("light" | "dark") — when set, skips the scroll-based
- *    section-sampling entirely and pins the navbar to that theme. Useful for
- *    inner pages (like the Spark/Krilan case study) that don't have
- *    alternating light/dark sections and just want a fixed white header.
- *  - `lightBg` prop — lets you override the "light" theme's background color
- *    (defaults to the original cream `rgba(245,242,234,0.88)`). Pass a solid
- *    white for inner pages.
- *  - "Home" is a real route (`/`) and always navigates there, full stop.
- *  - "About" / "Selected Work" / "Contact" are section links:
- *      - on "/": smooth-scrolled to in place
- *      - on any other route: navigates to "/#id", then a mount effect on
- *        "/" picks up the hash and scrolls to it once sections exist
- *
- * Usage (Home — dynamic, as before):
- *   <Navbar
- *     sections={[
- *       { id: "home", theme: "light" },
- *       { id: "about", theme: "dark" },
- *       { id: "work", theme: "light" },
- *       { id: "contact", theme: "light" },
- *     ]}
- *   />
- *
- * Usage (inner page — static white header):
- *   <Navbar forceTheme="light" lightBg="rgba(255,255,255,0.92)" logo="KRILAN" />
- */
-
 const DEFAULT_SECTIONS = [
   { id: "home", theme: "light" },
   { id: "about", theme: "dark" },
@@ -59,7 +19,7 @@ export default function Navbar({
   sections = DEFAULT_SECTIONS,
   logo = "KRILAN",
   forceTheme = null, // "light" | "dark" | null
-  lightBg = "rgba(245,242,234,0.88)", // original cream; pass white for inner pages
+  lightBg = "#F9F9F7", // main bg color
 }) {
   const [navDark, setNavDark] = useState(forceTheme === "dark");
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -169,11 +129,15 @@ export default function Navbar({
     }
   };
 
-  // Home: always a real route nav, no section/scroll logic involved.
+  // Home: if already on home, scroll to top. Otherwise route to home.
   const goHome = (e) => {
     e.preventDefault();
     setMobileOpen(false);
-    navigate("/");
+    if (location.pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      navigate("/");
+    }
   };
 
   return (
@@ -190,10 +154,11 @@ export default function Navbar({
 
       {/* header */}
       <header
-        className="fixed top-0 left-0 right-0 z-[500] flex items-center justify-between px-6 md:px-16 py-[26px] backdrop-blur-[10px] transition-colors duration-700 ease-[cubic-bezier(.25,.46,.45,.94)] font-['Switzer',sans-serif]"
+        className="fixed top-0 left-0 right-0 z-[500] flex items-center justify-between px-6 md:px-16 py-[26px] backdrop-blur-[10px] transition-colors duration-700 ease-[cubic-bezier(.25,.46,.45,.94)] font-['Switzer',sans-serif] border-b"
         style={{
           backgroundColor: navDark ? "rgba(13,12,10,0.82)" : lightBg,
           color: navDark ? "#eceae1" : "#16150f",
+          borderBottomColor: navDark ? "rgba(245,242,234,0.12)" : "#0F0F0F14",
         }}
       >
         <button
@@ -216,7 +181,9 @@ export default function Navbar({
           />
         </button>
 
-        <div className="font-bold text-sm tracking-[0.14em] text-current">{logo}</div>
+        <a href="/" onClick={goHome} className="font-bold text-sm tracking-[0.14em] text-current cursor-pointer hover:opacity-80 transition-opacity">
+          {logo}
+        </a>
 
         <span ref={chatWrapRef} className="inline-block">
           <a
