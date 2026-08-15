@@ -1,18 +1,23 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 /**
- * "Related Case Studies" section — single-card carousel with dot pagination,
- * a reveal-on-scroll header, and hands-off auto-advance.
+ * "Related Case Studies" — same calebwu.ca-style card stack as SelectedWork.jsx,
+ * reused for a smaller, page-scoped list of projects.
+ *
+ * Visual model (identical to SelectedWork):
+ *   ┌──────────────────────────────┐  z:10  scale:1.00  overlay:0.00  ← active
+ *   │  ┌────────────────────────┐  │  z:9   scale:0.94  overlay:0.15
+ *   │  │  ┌──────────────────┐  │  │  z:8   scale:0.88  overlay:0.30
  *
  * Reusable: pass `projects` (and optionally `title`) from the parent page.
  * Each case study page should pass its own list, excluding the project
  * currently being viewed.
  *
- * Visual language is carried over from SelectedWork.jsx: same dark
- * radial-gradient card, same Switzer font, same Case Study / Details button
- * pair, the same "next card peek" strip beneath the card, and the same
- * header reveal-on-scroll treatment — but simplified to a single visible
- * card with a lightweight dot pager instead of the pinned scroll stack.
+ * Interaction:
+ *   • Scroll/drag INSIDE the stack  → advances or reverses the deck.
+ *   • Scroll/drag OUTSIDE the stack → normal page scroll.
+ *   • The departing top card flies out upward (scale 0.85, rotate 8deg)
+ *     then is placed at the back, matching SelectedWork exactly.
  */
 
 export const DEFAULT_RELATED_PROJECTS = [
@@ -24,6 +29,7 @@ export const DEFAULT_RELATED_PROJECTS = [
     glow1: "rgba(76,90,220,0.5)",
     glow2: "rgba(45,30,140,0.32)",
     link: "/yatrasanghi",
+    date: "2025 - 26",
   },
   {
     title: "Manna Bakery",
@@ -33,242 +39,459 @@ export const DEFAULT_RELATED_PROJECTS = [
     glow1: "rgba(63,156,120,0.45)",
     glow2: "rgba(20,90,70,0.28)",
     link: null,
+    date: "2025",
   },
 ];
 
-const AUTO_SLIDE_MS = 4000;
+/* ── Stack appearance constants (identical to SelectedWork) ── */
+const DEPTH_CONFIG = [
+  { ty: "0vh", scale: 1, overlay: 0 },
+  { ty: "5vh", scale: 0.94, overlay: 0.15 },
+  { ty: "9vh", scale: 0.88, overlay: 0.30 },
+];
 
+const EASE = "cubic-bezier(0.62, 0.61, 0.02, 1)";
+
+/* ─── Magnetic custom cursor (identical to SelectedWork) ─── */
+function useMagneticCursor(containerRef) {
+  const dotRef = useRef(null);
+  const target = useRef({ x: 0, y: 0 });
+  const curr = useRef({ x: 0, y: 0 });
+  const rafId = useRef(null);
+  const [label, setLabel] = useState(null);
+  const [active, setActive] = useState(false);
+  const [finePointer, setFinePointer] = useState(false);
+
+  useEffect(() => {
+    setFinePointer(window.matchMedia("(pointer: fine)").matches);
+  }, []);
+
+  useEffect(() => {
+    if (!finePointer) return;
+    const el = containerRef.current;
+    if (!el) return;
+
+    const onMove = (e) => {
+      target.current = { x: e.clientX, y: e.clientY };
+      const hovered = e.target.closest("[data-cursor]");
+      setLabel(hovered ? hovered.getAttribute("data-cursor") : null);
+    };
+    const onEnter = () => setActive(true);
+    const onLeave = () => { setActive(false); setLabel(null); };
+
+    el.addEventListener("mousemove", onMove);
+    el.addEventListener("mouseenter", onEnter);
+    el.addEventListener("mouseleave", onLeave);
+
+    const tick = () => {
+      curr.current.x += (target.current.x - curr.current.x) * 0.18;
+      curr.current.y += (target.current.y - curr.current.y) * 0.18;
+      if (dotRef.current)
+        dotRef.current.style.transform =
+          `translate3d(${curr.current.x}px,${curr.current.y}px,0) translate(-50%,-50%)`;
+      rafId.current = requestAnimationFrame(tick);
+    };
+    rafId.current = requestAnimationFrame(tick);
+
+    return () => {
+      el.removeEventListener("mousemove", onMove);
+      el.removeEventListener("mouseenter", onEnter);
+      el.removeEventListener("mouseleave", onLeave);
+      cancelAnimationFrame(rafId.current);
+    };
+  }, [containerRef, finePointer]);
+
+  if (!finePointer) return null;
+
+  return (
+    <div
+      ref={dotRef}
+      className="pointer-events-none fixed left-0 top-0 z-[999] flex items-center justify-center whitespace-nowrap rounded-full bg-[#f5f2ea] text-[#16150f] shadow-[0_10px_26px_rgba(0,0,0,0.28)] transition-[width,height,opacity,padding] duration-300 ease-[cubic-bezier(.16,.8,.24,1)]"
+      style={{
+        opacity: active ? 1 : 0,
+        width: label ? "auto" : "10px",
+        height: label ? "34px" : "10px",
+        padding: label ? "0 16px" : 0,
+      }}
+    >
+      <span className={`text-[12px] font-medium tracking-[-0.01em] transition-opacity duration-200 ${label ? "opacity-100" : "opacity-0"}`}>
+        {label}
+      </span>
+    </div>
+  );
+}
+
+/* ─── Single card shell (identical to SelectedWork) ─── */
+function CardShell({ depthIndex, isLeaving, dragDy, isFront, children }) {
+  const cfg = DEPTH_CONFIG[Math.min(depthIndex, DEPTH_CONFIG.length - 1)];
+
+  let transform, opacity, zIndex, transition;
+
+  if (isLeaving) {
+    transform = "translateY(-64vh) scale(0.85) rotate(8deg)";
+    opacity = 0;
+    zIndex = 11;
+    transition = `transform 700ms ${EASE} 0ms, opacity 700ms ${EASE} 300ms`;
+  } else {
+    const dragOffset = isFront && dragDy !== 0 ? `${dragDy}px` : cfg.ty;
+    const dragScale = isFront && dragDy !== 0
+      ? Math.max(0.96, 1 - Math.abs(dragDy) / 1200)
+      : cfg.scale;
+
+    transform = `translateY(${dragOffset}) scale(${dragScale})`;
+    opacity = depthIndex < DEPTH_CONFIG.length ? 1 : 0;
+    zIndex = 10 - depthIndex;
+    transition = isFront && dragDy !== 0
+      ? "none"
+      : `transform 700ms ${EASE} ${depthIndex * 150}ms, opacity 700ms ${EASE} ${depthIndex * 150}ms`;
+  }
+
+  return (
+    <div
+      className="will-change-transform overflow-hidden min-w-0 flex-1 flex flex-row justify-center absolute w-full"
+      style={{ zIndex, opacity, transform, transition, pointerEvents: isFront ? "auto" : "none" }}
+    >
+      <div
+        className="relative w-full rounded-2xl lg:rounded-xl overflow-hidden aspect-[4/5] sm:aspect-[16/9] md:aspect-[2/1]"
+        style={{ maxHeight: "60svh", minHeight: "22rem", maxWidth: "68rem" }}
+      >
+        {children}
+
+        <div
+          className="absolute inset-0 bg-black pointer-events-none rounded-xl"
+          style={{
+            opacity: cfg.overlay,
+            transition: `opacity 700ms ${EASE} ${depthIndex * 150}ms`,
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+/* ─── Front card content (identical layout to SelectedWork) ─── */
+function CardContent({ project, index }) {
+  return (
+    <div
+      data-cursor="Swipe"
+      className="w-full h-full flex flex-col justify-between p-6 sm:p-8 md:p-10 text-[#eceae1] select-none"
+      style={{
+        background: `radial-gradient(120% 90% at 28% 12%, ${project.glow1}, transparent 60%),
+                     radial-gradient(90% 70% at 76% 88%, ${project.glow2}, transparent 65%),
+                     #0a0908`,
+        cursor: "none",
+      }}
+    >
+      <div className="flex justify-between text-xs tracking-[0.08em] text-[rgba(245,242,234,0.55)]">
+        <span>{String(index + 1).padStart(2, "0")}</span>
+        {project.date && <span style={{ color: project.accent }}>{project.date}</span>}
+      </div>
+
+      <div>
+        <div className="flex items-center gap-2.5 mb-3.5">
+          <svg className="w-5 h-5 flex-shrink-0 text-[#f5f2ea]" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L14 9.5L21 12L14 14.5L12 22L10 14.5L3 12L10 9.5L12 2Z" fill="currentColor" />
+          </svg>
+          <h3 className="font-bold text-[clamp(1.5rem,3vw,2rem)] text-[#f5f2ea]">
+            {project.title}
+          </h3>
+        </div>
+
+        <p className="text-sm leading-[1.55] text-[rgba(245,242,234,0.65)] max-w-[440px] mb-6">
+          {project.desc}
+        </p>
+
+        <div className="flex flex-wrap gap-2 mb-7">
+          {project.tags.map((t) => (
+            <span
+              key={t}
+              className="text-xs px-3.5 py-[7px] rounded-full border border-[rgba(245,242,234,0.12)] text-[rgba(245,242,234,0.75)]"
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+
+        <div className="flex gap-2.5">
+          {project.link ? (
+            <a
+              href={project.link}
+              data-cursor="Click to Open"
+              className="inline-flex items-center gap-1.5 px-5 py-3 text-[13px] font-medium bg-[#f5f2ea] text-[#16150f] rounded-none hover:rounded-xl transition-[border-radius,box-shadow] duration-300 hover:shadow-[0_10px_24px_rgba(0,0,0,0.35)]"
+              style={{ cursor: "none" }}
+            >
+              Case Study
+            </a>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-5 py-3 text-[13px] font-medium bg-[#f5f2ea] text-[#16150f] opacity-45 pointer-events-none">
+              Case Study
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Main section ─── */
 export default function RelatedCaseStudies({
   projects = DEFAULT_RELATED_PROJECTS,
   title = "Related Case Studies",
 }) {
+  const [order, setOrder] = useState(() => projects.map((_, i) => i));
+  const [leavingIdx, setLeavingIdx] = useState(null);
   const [current, setCurrent] = useState(0);
-  const [transitioning, setTransitioning] = useState(false);
   const [headerIn, setHeaderIn] = useState(false);
-  const [paused, setPaused] = useState(false);
+  const [paginateIn, setPaginateIn] = useState(false);
 
+  const [dragDy, setDragDy] = useState(0);
+  const dragging = useRef(false);
+  const startY = useRef(0);
+  const startX = useRef(0);
+  const isInsideStack = useRef(false);
+
+  const pinRef = useRef(null);
+  const stackRef = useRef(null);
   const headerRef = useRef(null);
-  const timerRef = useRef(null);
+  const animating = useRef(false);
 
-  // guard against an empty list after exclusion, and keep `current` in range
-  // if `projects` changes length between renders (e.g. navigating pages)
+  const customCursor = useMagneticCursor(pinRef);
+
+  // keep order/current in sync if `projects` changes length between renders
   useEffect(() => {
-    if (current >= projects.length) setCurrent(0);
-  }, [projects, current]);
+    setOrder(projects.map((_, i) => i));
+    setCurrent(0);
+  }, [projects]);
+
+  useEffect(() => {
+    const observe = (el, cb, threshold = 0.2) => {
+      const io = new IntersectionObserver(
+        (entries) => entries.forEach((e) => { if (e.isIntersecting) { cb(); io.unobserve(e.target); } }),
+        { threshold }
+      );
+      if (el) io.observe(el);
+      return () => io.disconnect();
+    };
+    const u1 = observe(headerRef.current, () => setHeaderIn(true));
+    const u2 = observe(stackRef.current, () => setPaginateIn(true), 0.1);
+    return () => { u1(); u2(); };
+  }, []);
+
+  const advance = useCallback(() => {
+    if (animating.current || projects.length < 2) return;
+    animating.current = true;
+    setLeavingIdx(0);
+    setCurrent((c) => (c + 1) % projects.length);
+    setTimeout(() => {
+      setOrder((prev) => {
+        const next = [...prev];
+        next.push(next.shift());
+        return next;
+      });
+      setLeavingIdx(null);
+      animating.current = false;
+    }, 700);
+  }, [projects.length]);
+
+  const reverse = useCallback(() => {
+    if (animating.current || projects.length < 2) return;
+    animating.current = true;
+    setCurrent((c) => (c - 1 + projects.length) % projects.length);
+    setOrder((prev) => {
+      const next = [...prev];
+      next.unshift(next.pop());
+      return next;
+    });
+    setTimeout(() => { animating.current = false; }, 700);
+  }, [projects.length]);
+
+  useEffect(() => {
+    const el = stackRef.current;
+    if (!el) return;
+    const onEnter = () => { isInsideStack.current = true; };
+    const onLeave = () => { isInsideStack.current = false; };
+    el.addEventListener("mouseenter", onEnter);
+    el.addEventListener("mouseleave", onLeave);
+    return () => {
+      el.removeEventListener("mouseenter", onEnter);
+      el.removeEventListener("mouseleave", onLeave);
+    };
+  }, []);
+
+  useEffect(() => {
+    const el = stackRef.current;
+    if (!el) return;
+
+    let cooldown = false;
+
+    const onWheel = (e) => {
+      if (!isInsideStack.current) return;
+
+      const absX = Math.abs(e.deltaX);
+      const absY = Math.abs(e.deltaY);
+
+      if (absY > 8 || absX > 8) {
+        e.preventDefault();
+        if (cooldown) return;
+        cooldown = true;
+        setTimeout(() => { cooldown = false; }, 750);
+
+        const delta = absY >= absX ? e.deltaY : e.deltaX;
+        if (delta > 0) advance();
+        else reverse();
+      }
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [advance, reverse]);
+
+  const onPointerDown = (e) => {
+    if (animating.current) return;
+    dragging.current = true;
+    startY.current = e.clientY;
+    startX.current = e.clientX;
+    setDragDy(0);
+  };
+
+  const onPointerMove = (e) => {
+    if (!dragging.current) return;
+    const dy = e.clientY - startY.current;
+    const dx = e.clientX - startX.current;
+    setDragDy(Math.abs(dx) > Math.abs(dy) ? dx : dy);
+  };
+
+  const onPointerUp = (e) => {
+    if (!dragging.current) return;
+    dragging.current = false;
+    const THRESHOLD = 50;
+
+    const dx = e.clientX - startX.current;
+    const dy = e.clientY - startY.current;
+
+    if (dy < -THRESHOLD || dx < -THRESHOLD) advance();
+    else if (dy > THRESHOLD || dx > THRESHOLD) reverse();
+
+    setDragDy(0);
+  };
+
+  const onPointerCancel = () => { dragging.current = false; setDragDy(0); };
+
+  const jumpTo = (targetProjectIdx) => {
+    if (animating.current) return;
+    const frontProjectIdx = order[0];
+    if (frontProjectIdx === targetProjectIdx) return;
+
+    const stepsForward = order.indexOf(targetProjectIdx);
+
+    let step = 0;
+    const doStep = () => {
+      if (step >= stepsForward) return;
+      step++;
+      advance();
+      setTimeout(doStep, 760);
+    };
+    doStep();
+  };
 
   if (!projects || projects.length === 0) return null;
 
-  const project = projects[current];
-  const nextProject = projects[(current + 1) % projects.length];
-
-  // header reveal-on-scroll, same pattern as SelectedWork.jsx
-  useEffect(() => {
-    const el = headerRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setHeaderIn(true);
-            io.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  const changeTo = (i, reduceMotion) => {
-    const idx = (i + projects.length) % projects.length;
-    if (reduceMotion) {
-      setCurrent(idx);
-      return;
-    }
-    setTransitioning(true);
-    setTimeout(() => {
-      setCurrent(idx);
-      setTransitioning(false);
-    }, 220);
-  };
-
-  const goTo = (i) => {
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    changeTo(i, reduceMotion);
-  };
-
-  // auto-slide, pauses on hover/focus and respects reduced-motion
-  useEffect(() => {
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion || paused || projects.length <= 1) return;
-
-    timerRef.current = setInterval(() => {
-      setTransitioning(true);
-      setTimeout(() => {
-        setCurrent((c) => (c + 1) % projects.length);
-        setTransitioning(false);
-      }, 220);
-    }, AUTO_SLIDE_MS);
-
-    return () => clearInterval(timerRef.current);
-  }, [paused, projects.length]);
-
   return (
-    <section className="bg-[#ffffff]  pb-[80px] font-['Switzer',sans-serif]">
-      <style>{`
-        @keyframes dotFill {
-          from { width: 0%; }
-          to { width: 100%; }
-        }
-      `}</style>
+    <section className="bg-[#ffffff] pt-[60px] pb-[110px] font-['Switzer',sans-serif]">
+      {customCursor}
 
-      <div className="w-full mx-auto px-6 md:px-16">
-        <div
-          ref={headerRef}
-          className={`mb-10 transition-all duration-[900ms] ease-[cubic-bezier(.16,.8,.24,1)] ${
-            headerIn ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-7 blur-[6px]"
-          }`}
-        >
-          <p className="font-medium tracking-[-0.03em] leading-[0.98] text-[clamp(2rem,4.4vw,3rem)] text-[#16150f]">
-            {title}
-          </p>
-        </div>
+      <div ref={pinRef} className="relative flex flex-col items-center justify-center [@media(pointer:fine)]:cursor-none">
+        <div className="w-full max-w-[1400px] mx-auto px-6 md:px-16">
 
-        <div
-          className="relative"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-          onFocus={() => setPaused(true)}
-          onBlur={() => setPaused(false)}
-        >
+          {/* ── Header ── */}
           <div
-            className={`relative z-[2] h-[clamp(360px,50vw,520px)] rounded-[28px] overflow-hidden p-9 md:p-10 flex flex-col justify-between text-[#eceae1] transition-[background,opacity,transform] duration-500 ease-[cubic-bezier(.16,.8,.24,1)] ${
-              transitioning ? "opacity-0 scale-[0.98]" : "opacity-100 scale-100"
-            }`}
-            style={{
-              background: `radial-gradient(120% 90% at 28% 12%, ${project.glow1}, transparent 60%), radial-gradient(90% 70% at 76% 88%, ${project.glow2}, transparent 65%), #0a0908`,
-            }}
+            ref={headerRef}
+            className={`mb-16 transition-all duration-[900ms] ease-[cubic-bezier(.16,.8,.24,1)] ${headerIn ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-7 blur-[6px]"
+              }`}
           >
-            {/* faint signature ring, echoes the sparkle glyph on SelectedWork cards */}
-            <div
-              className="absolute left-9 top-16 md:left-10 md:top-20 w-[110px] h-[110px] rounded-full border pointer-events-none"
-              style={{ borderColor: `${project.accent}33` }}
-            />
-
-            <div className="flex justify-end text-xs tracking-[0.08em] text-[rgba(245,242,234,0.55)]">
-              {projects.length > 1 && (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => goTo(current - 1)}
-                    aria-label="Previous project"
-                    className="grid place-items-center w-8 h-8 rounded-full border border-[rgba(245,242,234,0.15)] hover:bg-[rgba(245,242,234,0.08)] transition-colors mr-2"
-                  >
-                    <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M15 6l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => goTo(current + 1)}
-                    aria-label="Next project"
-                    className="grid place-items-center w-8 h-8 rounded-full border border-[rgba(245,242,234,0.15)] hover:bg-[rgba(245,242,234,0.08)] transition-colors"
-                  >
-                    <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </button>
-                </>
-              )}
-            </div>
-
-            <div>
-              <h3 className="font-bold text-[clamp(1.5rem,3vw,2rem)] text-[#f5f2ea] mb-3.5">
-                {project.title}
-              </h3>
-
-              <p className="text-sm leading-[1.55] text-[rgba(245,242,234,0.65)] max-w-[440px] mb-6">
-                {project.desc}
-              </p>
-
-              <div className="flex flex-wrap gap-2 mb-7">
-                {project.tags.map((t) => (
-                  <span
-                    key={t}
-                    className="text-xs px-3.5 py-[7px] rounded-full border border-[rgba(245,242,234,0.12)] text-[rgba(245,242,234,0.75)]"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-
-              <div className="flex gap-2.5">
-                {project.link ? (
-                  <a
-                    href={project.link}
-                    className="inline-flex items-center gap-1.5 px-5 py-3 text-[13px] font-medium bg-[#f5f2ea] text-[#16150f] rounded-none hover:rounded-xl transition-[border-radius,box-shadow] duration-300 hover:shadow-[0_10px_24px_rgba(0,0,0,0.35)]"
-                  >
-                    Case Study
-                  </a>
-                ) : (
-                  <span
-                    aria-disabled="true"
-                    className="inline-flex items-center gap-1.5 px-5 py-3 text-[13px] font-medium bg-[#f5f2ea] text-[#16150f] opacity-45 pointer-events-none"
-                  >
-                    Case Study
-                  </span>
-                )}
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-1.5 px-5 py-3 text-[13px] font-medium bg-[rgba(245,242,234,0.08)] text-[#eceae1] border border-[rgba(245,242,234,0.12)] hover:bg-[rgba(245,242,234,0.16)] rounded-none hover:rounded-xl transition-all duration-300"
-                >
-                  Details
-                </button>
-              </div>
-            </div>
+            <p className="font-medium tracking-[-0.03em] leading-[0.98] text-[clamp(2rem,4.4vw,3rem)] text-[#16150f]">
+              {title}
+            </p>
           </div>
 
-          {/* next-card peek strip, separated from the card by a visible gap */}
-          {projects.length > 1 && (
-            <div className="mt-3 mx-3.5 h-[26px] rounded-b-[22px] overflow-hidden">
-              <div
-                className="h-full w-full transition-colors duration-700 ease-[cubic-bezier(.25,.46,.45,.94)]"
-                style={{ background: nextProject.accent, opacity: 0.9 }}
-              />
-            </div>
-          )}
+          {/* ── Card stack ── */}
+          <div
+            ref={stackRef}
+            className="relative flex flex-row justify-center items-center w-full [touch-action:none]"
+            style={{ height: "clamp(350px, 60svh, 480px)" }}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}
+            onPointerCancel={onPointerCancel}
+          >
+            {[...order].reverse().map((projectIdx, reversedDepth) => {
+              const depth = (order.length - 1) - reversedDepth;
+              const isLeaving = leavingIdx === 0 && depth === 0;
+              const isFront = depth === 0;
 
-          {/* dot pager */}
+              return (
+                <CardShell
+                  key={projectIdx}
+                  depthIndex={depth}
+                  isLeaving={isLeaving}
+                  dragDy={isFront ? dragDy : 0}
+                  isFront={isFront}
+                >
+                  <CardContent project={projects[projectIdx]} index={projectIdx} />
+                </CardShell>
+              );
+            })}
+          </div>
+
+          {/* ── Pill pagination — "1 of N" + overlapping avatar dots ── */}
           {projects.length > 1 && (
-            <div className="flex justify-center mt-8">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-2 rounded-full bg-[#16150f]">
-                {projects.map((p, i) => (
-                  <button
-                    key={p.title}
-                    type="button"
-                    onClick={() => goTo(i)}
-                    aria-label={`Go to ${p.title}`}
-                    aria-current={i === current}
-                    className={`relative h-1.5 rounded-full overflow-hidden transition-[width,background-color] duration-300 ease-[cubic-bezier(.16,.8,.24,1)] ${
-                      i === current ? "w-6 bg-[rgba(245,242,234,0.25)]" : "w-1.5 bg-[rgba(245,242,234,0.35)]"
-                    }`}
-                  >
-                    {i === current && (
-                      <span
-                        key={`${current}-${paused}`}
-                        className="absolute inset-y-0 left-0 bg-[#f5f2ea] rounded-full"
+            <div
+              className={`relative z-[20] flex justify-center transition-all duration-700 ease-[cubic-bezier(.16,.8,.24,1)] ${paginateIn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                }`}
+              style={{ transitionDelay: paginateIn ? "200ms" : "0ms", marginTop: "calc(1.5rem + 10vh)" }}
+            >
+              <div className="inline-flex items-center gap-3.5 pl-5 pr-3 py-2.5 rounded-full bg-[#f5f2ea] border border-[rgba(22,21,15,0.12)] shadow-[0_12px_30px_rgba(22,21,15,0.06)]">
+                <span className="text-[13px] text-[#8f8c81] whitespace-nowrap">
+                  {current + 1} of {projects.length}
+                </span>
+
+                <div className="flex items-center group/pill pr-1">
+                  {projects.map((p, i) => {
+                    const isCurrent = i === order[0];
+                    return (
+                      <button
+                        key={p.title}
+                        type="button"
+                        data-cursor={isCurrent ? null : "Switch"}
+                        onClick={() => jumpTo(i)}
+                        aria-label={`Go to ${p.title}`}
+                        className="group/thumb relative transition-[margin] duration-[450ms] ease-[cubic-bezier(.62,.61,.02,1)] cursor-pointer"
                         style={{
-                          animation: paused ? "none" : `dotFill ${AUTO_SLIDE_MS}ms linear forwards`,
-                          width: paused ? "100%" : undefined,
+                          zIndex: isCurrent ? 5 : projects.length - i,
+                          marginLeft: i === 0 ? 0 : "-0.75rem",
                         }}
-                      />
-                    )}
-                  </button>
-                ))}
+                      >
+                        <span className="absolute -top-9 left-1/2 -translate-x-1/2 translate-y-[6px] scale-[0.96] origin-bottom opacity-0 transition-all duration-300 ease-out group-hover/thumb:-translate-y-0 group-hover/thumb:opacity-100 group-hover/thumb:scale-100 pointer-events-none z-50 whitespace-nowrap">
+                          <span className="block bg-[#16150f] text-[#f5f2ea] text-[11px] rounded-md px-2.5 py-1.5 shadow-md">
+                            {p.title}
+                          </span>
+                        </span>
+
+                        <div
+                          className={`w-8 h-8 rounded-full border-2 border-[#f5f2ea] flex items-center justify-center text-white text-[11px] font-semibold overflow-hidden transition-transform duration-300 ease-[cubic-bezier(.16,.8,.24,1)] ${isCurrent ? "scale-[1.18] -translate-y-0.5 shadow-[0_6px_16px_rgba(22,21,15,0.25)]" : ""
+                            }`}
+                          style={{ background: p.accent }}
+                        >
+                          {p.title.charAt(0)}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           )}
+
         </div>
       </div>
     </section>
