@@ -1,4 +1,4 @@
-import researchImage from "../../assets/spark/research.svg";
+import researchImage from "../../assets/Spark/research.svg";
 
 function TheResearch() {
   return (
