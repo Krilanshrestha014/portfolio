@@ -14,15 +14,16 @@ import { DEFAULT_RELATED_PROJECTS } from "../config/defaultProject";
 
 const Yatrasanghi = () => {
   const sections = [
-  { id: "overview", label: "Project Overview" },
-  { id: "problem", label: "The Problem" },
-  { id: "role", label: "My role" },
-  { id: "research", label: "Research & Strategy" },
-  { id: "structure", label: "Structure & Wireframes" },
-  { id: "ui-design", label: "UI Design" },
-  { id: "collaboration", label: "Collaboration & Development" },
-  { id: "outcome", label: "Outcome & Reflection" },
-];
+    { id: "overview", label: "Project Overview" },
+    { id: "problem", label: "The Problem" },
+    { id: "role", label: "My role" },
+    { id: "research", label: "Research & Strategy" },
+    { id: "structure", label: "Structure & Wireframes" },
+    { id: "ui-design", label: "UI Design" },
+    { id: "collaboration", label: "Collaboration & Development" },
+    { id: "outcome", label: "Outcome & Reflection" },
+  ];
+
   return (
     <div>
       <ProjectHero
@@ -36,7 +37,8 @@ const Yatrasanghi = () => {
         ctaLabel="Visit Figma"
         ctaHref="https://figma.com/your-link-here"
       />
-      <div className="flex gap-16 bg-[#ffffff] px-0 sm:px-6 md:px-16 py-12 sm:py-24">
+
+      <div className="flex items-start gap-16 bg-[#ffffff] px-0 sm:px-6 md:px-16 py-12 sm:py-24">
         <SectionNav
           sections={sections}
           className="hidden md:flex sticky top-24 self-start shrink-0 w-[180px]"
@@ -52,6 +54,7 @@ const Yatrasanghi = () => {
           <OutcomeReflection />
         </div>
       </div>
+
       <RelatedCaseStudies
         projects={DEFAULT_RELATED_PROJECTS.filter((p) => p.title !== "Yatrasanghi")}
       />

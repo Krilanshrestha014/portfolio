@@ -19,6 +19,7 @@ const MannaBakery = () => {
     { id: "ui-design", label: "UI Design" },
     { id: "outcome", label: "Outcome & Reflection" },
   ];
+
   return (
     <div>
       <ProjectHero
@@ -33,7 +34,8 @@ const MannaBakery = () => {
         ctaLabel="Visit Figma"
         ctaHref="#"
       />
-      <div className="flex gap-16 bg-[#ffffff] px-0 sm:px-6 md:px-16 py-12 sm:py-24">
+
+      <div className="flex items-start gap-16 bg-[#ffffff] px-0 sm:px-6 md:px-16 py-12 sm:py-24">
         <SectionNav
           sections={sections}
           className="hidden md:flex sticky top-24 self-start shrink-0 w-[180px]"
@@ -47,6 +49,7 @@ const MannaBakery = () => {
           <OutcomeReflection />
         </div>
       </div>
+
       <RelatedCaseStudies
         projects={DEFAULT_RELATED_PROJECTS.filter(
           (p) => p.title !== "Manna Bakery",

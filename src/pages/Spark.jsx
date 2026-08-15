@@ -21,6 +21,7 @@ const Spark = () => {
     { id: "ui-design", label: "UI Design" },
     { id: "outcome", label: "Outcome & Reflection" },
   ];
+
   return (
     <div>
       <ProjectHero
@@ -35,11 +36,14 @@ const Spark = () => {
         ctaLabel="Visit Website"
         ctaHref="https://sparkbysupriya.com/"
       />
-      <div className="flex gap-16 bg-[#ffffff] px-0 sm:px-6 md:px-16 py-12 sm:py-24">
+
+      <div className="flex items-start gap-16 bg-[#ffffff] px-0 sm:px-6 md:px-16 py-12 sm:py-24">
         <SectionNav
           sections={sections}
+          scrollOffset={96}
           className="hidden md:flex sticky top-24 self-start shrink-0 w-[180px]"
         />
+
         <div className="flex-1 min-w-0 sm:px-0 px-6">
           <SparkOverview />
           <TheChallenge />
@@ -49,8 +53,8 @@ const Spark = () => {
           <UIDesign />
           <OutcomeReflection />
         </div>
-
       </div>
+
       <RelatedCaseStudies
         projects={DEFAULT_RELATED_PROJECTS.filter((p) => p.title !== "Spark")}
       />
