@@ -38,20 +38,22 @@ const Yatrasanghi = () => {
         ctaHref="https://figma.com/your-link-here"
       />
 
-      <div className="flex items-start gap-16 bg-[#ffffff] px-0 sm:px-6 md:px-16 py-12 sm:py-24">
-        <SectionNav
-          sections={sections}
-          className="hidden md:flex sticky top-24 self-start shrink-0 w-[180px]"
-        />
-        <div className="flex-1 min-w-0 sm:px-0 px-6">
-          <YatraOverview />
-          <TheChallenge />
-          <MyRole />
-          <ResearchStrategy />
-          <StructureWireframes />
-          <UIDesign />
-          <CollaborationDevelopment />
-          <OutcomeReflection />
+      <div className="bg-[#ffffff] py-12 sm:py-24">
+        <div className="max-w-[1400px] mx-auto flex items-start gap-16 px-6 md:px-16">
+          <SectionNav
+            sections={sections}
+            className="hidden md:flex sticky top-24 self-start shrink-0 w-[180px]"
+          />
+          <div className="flex-1 min-w-0">
+            <YatraOverview />
+            <TheChallenge />
+            <MyRole />
+            <ResearchStrategy />
+            <StructureWireframes />
+            <UIDesign />
+            <CollaborationDevelopment />
+            <OutcomeReflection />
+          </div>
         </div>
       </div>
 

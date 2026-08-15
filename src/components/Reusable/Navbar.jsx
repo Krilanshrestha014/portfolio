@@ -152,53 +152,57 @@ export default function Navbar({
         style={{ background: navDark ? "rgba(245,242,234,0.35)" : "rgba(22,21,15,0.25)" }}
       />
 
-      {/* header */}
+      {/* header — full-bleed bar, content constrained to the same 1400px
+          max width used by SelectedWork / RelatedCaseStudies so the logo,
+          menu button, and chat link line up with page content on laptop. */}
       <header
-        className="fixed top-0 left-0 right-0 z-[500] flex items-center justify-between px-6 md:px-16 py-[26px] backdrop-blur-[10px] transition-colors duration-700 ease-[cubic-bezier(.25,.46,.45,.94)] font-['Switzer',sans-serif] border-b"
+        className="fixed top-0 left-0 right-0 z-[500] backdrop-blur-[10px] transition-colors duration-700 ease-[cubic-bezier(.25,.46,.45,.94)] font-['Switzer',sans-serif] border-b"
         style={{
           backgroundColor: navDark ? "rgba(13,12,10,0.82)" : lightBg,
           color: navDark ? "#eceae1" : "#16150f",
           borderBottomColor: navDark ? "rgba(245,242,234,0.12)" : "#0F0F0F14",
         }}
       >
-        <button
-          type="button"
-          aria-label="Toggle menu"
-          onClick={() => setMobileOpen((v) => !v)}
-          className="relative z-[600] flex flex-col gap-[5px] w-[22px] py-1.5"
-        >
-          <span
-            className="block h-0.5 w-full bg-current transition-transform duration-[450ms] ease-[cubic-bezier(.16,.8,.24,1)]"
-            style={{ transform: mobileOpen ? "translateY(7px) rotate(45deg)" : "none" }}
-          />
-          <span
-            className="block h-0.5 w-full bg-current transition-opacity duration-300"
-            style={{ opacity: mobileOpen ? 0 : 1 }}
-          />
-          <span
-            className="block h-0.5 w-full bg-current transition-transform duration-[450ms] ease-[cubic-bezier(.16,.8,.24,1)]"
-            style={{ transform: mobileOpen ? "translateY(-7px) rotate(-45deg)" : "none" }}
-          />
-        </button>
-
-        <a href="/" onClick={goHome} className="font-bold text-sm tracking-[0.14em] text-current cursor-pointer hover:opacity-80 transition-opacity">
-          {logo}
-        </a>
-
-        <span ref={chatWrapRef} className="inline-block">
-          <a
-            ref={chatBtnRef}
-            href="#contact"
-            onClick={goToSection("contact")}
-            data-cursor="Chat"
-            className="inline-flex items-center gap-1.5 text-sm border-b border-[#c07a45] pb-0.5 text-[#c07a45] transition-opacity duration-300 group"
+        <div className="w-full max-w-[1400px] mx-auto flex items-center justify-between px-6 md:px-16 py-[26px]">
+          <button
+            type="button"
+            aria-label="Toggle menu"
+            onClick={() => setMobileOpen((v) => !v)}
+            className="relative z-[600] flex flex-col gap-[5px] w-[22px] py-1.5"
           >
-            Let&apos;s chat{" "}
-            <span className="inline-block transition-transform duration-[350ms] ease-[cubic-bezier(.16,.8,.24,1)] group-hover:translate-x-1">
-              →
-            </span>
+            <span
+              className="block h-0.5 w-full bg-current transition-transform duration-[450ms] ease-[cubic-bezier(.16,.8,.24,1)]"
+              style={{ transform: mobileOpen ? "translateY(7px) rotate(45deg)" : "none" }}
+            />
+            <span
+              className="block h-0.5 w-full bg-current transition-opacity duration-300"
+              style={{ opacity: mobileOpen ? 0 : 1 }}
+            />
+            <span
+              className="block h-0.5 w-full bg-current transition-transform duration-[450ms] ease-[cubic-bezier(.16,.8,.24,1)]"
+              style={{ transform: mobileOpen ? "translateY(-7px) rotate(-45deg)" : "none" }}
+            />
+          </button>
+
+          <a href="/" onClick={goHome} className="font-bold text-sm tracking-[0.14em] text-current cursor-pointer hover:opacity-80 transition-opacity">
+            {logo}
           </a>
-        </span>
+
+          <span ref={chatWrapRef} className="inline-block">
+            <a
+              ref={chatBtnRef}
+              href="#contact"
+              onClick={goToSection("contact")}
+              data-cursor="Chat"
+              className="inline-flex items-center gap-1.5 text-sm border-b border-[#c07a45] pb-0.5 text-[#c07a45] transition-opacity duration-300 group"
+            >
+              Let&apos;s chat{" "}
+              <span className="inline-block transition-transform duration-[350ms] ease-[cubic-bezier(.16,.8,.24,1)] group-hover:translate-x-1">
+                →
+              </span>
+            </a>
+          </span>
+        </div>
       </header>
 
       {/* mobile nav overlay */}
