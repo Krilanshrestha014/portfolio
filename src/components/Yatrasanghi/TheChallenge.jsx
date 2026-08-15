@@ -1,6 +1,6 @@
-import Slot1 from "../../assets/Yatra/slot1.svg";
-import Slot2 from "../../assets/Yatra/slot2.svg";
-import Slot3 from "../../assets/Yatra/slot3.svg";
+import Slot1 from "../../assets/Yatra/Slot1.svg";
+import Slot2 from "../../assets/Yatra/Slot2.svg";
+import Slot3 from "../../assets/Yatra/Slot3.svg";
 
 function TheChallenge() {
   const challenges = [

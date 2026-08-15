@@ -6,7 +6,7 @@ import TheChallenge from "../components/MannaBakery/TheChallenge";
 import ResearchStrategy from "../components/MannaBakery/ResearchStrategy";
 import UserFlowWireframes from "../components/MannaBakery/UserFlowWireframes";
 import OutcomeReflection from "../components/MannaBakery/OutcomeReflection";
-import UIDesign from "../components/MannaBakery/Uidesign";
+import UIDesign from "../components/MannaBakery/UIDesign";
 import RelatedCaseStudies from "../components/Reusable/RelatedCaseStudies";
 import { DEFAULT_RELATED_PROJECTS } from "../config/defaultProject";
 

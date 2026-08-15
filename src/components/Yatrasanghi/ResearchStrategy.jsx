@@ -1,4 +1,4 @@
-import researchImage from "../../assets/Yatra/research.svg";
+import researchImage from "../../assets/Yatra/Research.svg";
 
 function ResearchStrategy() {
   const steps = ["Discover", "Explore", "Understand", "Plan"];

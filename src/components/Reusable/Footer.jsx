@@ -1,5 +1,5 @@
 import React from "react";
-import FooterCTA from "../Home/FooterCta";
+import FooterCTA from "../Home/FooterCTA";
 
 /**
  * Site footer — faithful React + Tailwind port of the original <footer id="contact">.
