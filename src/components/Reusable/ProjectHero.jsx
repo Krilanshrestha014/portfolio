@@ -62,7 +62,7 @@ const ProjectHero = memo(function ProjectHero({
             onClick={onCtaClick}
             target={ctaHref?.startsWith("http") ? "_blank" : undefined}
             rel={ctaHref?.startsWith("http") ? "noopener noreferrer" : undefined}
-            className="inline-flex items-center justify-center shrink-0 px-6 py-3 text-[13px] font-medium rounded-sm bg-neutral-900 text-white transition-colors duration-300 hover:bg-neutral-700"
+            className="inline-flex items-center justify-center shrink-0 px-6 py-3 text-[13px] font-medium rounded-none bg-neutral-900 text-white transition-all duration-300 hover:bg-neutral-700 hover:rounded-lg"
           >
             {ctaLabel}
           </a>

@@ -170,7 +170,7 @@ function CardShell({ project, depthIndex, isLeaving, dragDy, isFront, children }
       {/* Card body */}
       <div
         className="relative w-full rounded-2xl lg:rounded-xl overflow-hidden aspect-[4/5] sm:aspect-[16/9] md:aspect-[2/1]"
-        style={{ maxHeight: "60svh", minHeight: "22rem", maxWidth: "60rem" }}
+        style={{ maxHeight: "60svh", minHeight: "22rem", maxWidth: "68rem" }}
       >
         {children}
 
@@ -424,18 +424,18 @@ export default function SelectedWork() {
       {customCursor}
 
       <div ref={pinRef} className="relative flex flex-col items-center justify-center [@media(pointer:fine)]:cursor-none">
-        <div className="w-full max-w-[1240px] mx-auto px-6 md:px-16">
+        <div className="w-full max-w-[1400px] mx-auto px-6 md:px-16">
 
           {/* ── Header ── */}
           <div
             ref={headerRef}
-            className={`mb-6 transition-all duration-[900ms] ease-[cubic-bezier(.16,.8,.24,1)] ${headerIn ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-7 blur-[6px]"
+            className={`mb-16 text-center transition-all duration-[900ms] ease-[cubic-bezier(.16,.8,.24,1)] ${headerIn ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-7 blur-[6px]"
               }`}
           >
             <h2 className="font-bold tracking-[-0.03em] leading-[0.98] text-[clamp(2rem,4.4vw,3rem)] text-[#16150f]">
               Selected Work
             </h2>
-          </div>
+          </div>  
 
           {/* ── Card stack ── */}
           <div

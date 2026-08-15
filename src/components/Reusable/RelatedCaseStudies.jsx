@@ -409,9 +409,9 @@ export default function RelatedCaseStudies({
             className={`mb-16 transition-all duration-[900ms] ease-[cubic-bezier(.16,.8,.24,1)] ${headerIn ? "opacity-100 translate-y-0 blur-0" : "opacity-0 translate-y-7 blur-[6px]"
               }`}
           >
-            <p className="font-medium tracking-[-0.03em] leading-[0.98] text-[clamp(2rem,4.4vw,3rem)] text-[#16150f]">
+            {/* <p className="font-medium tracking-[-0.03em] leading-[0.98] text-[clamp(2rem,4.4vw,3rem)] text-[#16150f]">
               {title}
-            </p>
+            </p> */}
           </div>
 
           {/* ── Card stack ── */}
