@@ -14,7 +14,7 @@ const ProjectHero = memo(function ProjectHero({
     <section
       className={`w-full bg-[#ffffff]  mt-10 ${className}`}
     >
-      <div className="px-6 sm:px-14 md:px-16 pt-20 pb-14 sm:pt-28 sm:pb-16 md:pt-32 md:pb-20">
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-14 md:px-16 pt-20 pb-14 sm:pt-28 sm:pb-16 md:pt-32 md:pb-20">
         {/* Title */}
         <p className="font-medium lg:text-6xl text-2xl  leading-[1.15] tracking-tight text-black max-w-[1200px]">
           {title}
@@ -44,10 +44,12 @@ const ProjectHero = memo(function ProjectHero({
       </div>
 
       {/* Divider */}
-      <div className="border-t border-[#00000014] mx-20" />
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-14 md:px-16">
+        <div className="border-t border-[#00000014]" />
+      </div>
 
       {/* Description + CTA */}
-      <div className="px-8 sm:px-14 md:px-20 py-10 sm:py-12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+      <div className="max-w-[1400px] mx-auto px-8 sm:px-14 md:px-16 py-10 sm:py-12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
         {description && (
           <p className="text-[16px] leading-relaxed text-[#777777] max-w-[520px]">
             {description}

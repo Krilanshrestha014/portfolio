@@ -7,11 +7,11 @@ function UserFlowWireframes() {
         User Flow &amp; Wireframes
       </p>
 
-      <p className="mt-3 font-medium text-[1.6rem] sm:text-3xl md:text-4xl lg:text-6xl max-w-6xl leading-[1.2] sm:leading-[1.25] tracking-tight text-[#000000]">
+      <p className="mt-3 font-medium text-[1.6rem] sm:text-3xl md:text-4xl lg:text-6xl leading-[1.2] sm:leading-[1.25] tracking-tight text-[#000000]">
         Structuring the journey before designing the interface
       </p>
 
-      <p className="mt-4 sm:mt-5 text-[13px] sm:text-[14px] md:text-[16px] text-[#777777] font-normal leading-relaxed max-w-5xl">
+      <p className="mt-4 sm:mt-5 text-[13px] sm:text-[14px] md:text-[16px] text-[#777777] font-normal leading-relaxed max-w-3xl">
         I mapped the ordering flow and translated it into low-fidelity
         wireframes to identify unnecessary steps, establish content
         hierarchy, and validate the structure before moving into
