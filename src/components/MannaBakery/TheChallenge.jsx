@@ -1,6 +1,7 @@
 import Slot1 from "../../assets/Manna/Slot1.svg";
 import Slot2 from "../../assets/Manna/Slot2.svg";
 import Slot3 from "../../assets/Manna/Slot3.svg";
+import ImageWithSkeleton from "../Reusable/ImageWithSkeleton";
 
 function TheChallenge() {
   const challenges = [
@@ -52,10 +53,12 @@ function TheChallenge() {
 
             {/* Preview image */}
             <div className="mt-6 sm:mt-8 border border-[#E5E5E5] rounded-2xl overflow-hidden bg-white">
-              <img
+              <ImageWithSkeleton
                 src={image}
                 alt={`${title} preview`}
-                className="w-full h-auto object-contain"
+                containerClassName="w-full"
+                imgClassName="w-full h-auto object-contain"
+                minHeightClassName="min-h-[220px] sm:min-h-[300px] md:min-h-[360px]"
               />
             </div>
           </div>

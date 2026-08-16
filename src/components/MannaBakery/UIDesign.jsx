@@ -1,4 +1,5 @@
 import uiDesignImage from "../../assets/Manna/design.svg";
+import ImageWithSkeleton from "../Reusable/ImageWithSkeleton";
 
 function UIDesign() {
   return (
@@ -21,10 +22,12 @@ function UIDesign() {
           small screens so the row of screens stays legible instead of
           shrinking to illegible thumbnails. */}
       <div className="mt-8 sm:mt-10 md:mt-12 w-full rounded-2xl sm:rounded-3xl overflow-x-auto overflow-y-hidden border border-[#E5E5E5]">
-        <img
+        <ImageWithSkeleton
           src={uiDesignImage}
           alt="Figma workspace showing the Manna Bakery mobile UI screens from home through delivery"
-          className="h-auto min-w-[720px] w-full sm:min-w-0 object-contain block"
+          containerClassName="rounded-lg"
+          imgClassName="h-auto min-w-[720px] w-full sm:min-w-0 object-contain block"
+          minHeightClassName="min-h-[220px] sm:min-h-[320px] md:min-h-[400px]"
         />
       </div>
     </section>
