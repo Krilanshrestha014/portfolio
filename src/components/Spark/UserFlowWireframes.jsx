@@ -1,4 +1,5 @@
 import userFlowImage from "../../assets/Manna/userflow.svg";
+import ImageWithSkeleton from "../Reusable/ImageWithSkeleton";
 
 function UserFlowWireframes() {
   return (
@@ -18,13 +19,13 @@ function UserFlowWireframes() {
         high-fidelity UI.
       </p>
 
-      {/* Flow diagram — wide by nature, so it scrolls horizontally on
-          small screens instead of squashing the boxes/arrows illegible */}
       <div className="mt-8 sm:mt-10 md:mt-12 w-full rounded-2xl sm:rounded-3xl border border-[#E5E5E5] bg-white p-3 sm:p-5 md:p-6 overflow-x-auto">
-        <img
+        <ImageWithSkeleton
           src={userFlowImage}
           alt="User flow diagram from home page through checkout and delivery"
-          className="h-auto min-w-[640px] w-full sm:min-w-0 object-contain"
+          containerClassName="rounded-lg"
+          imgClassName="h-auto min-w-[640px] w-full sm:min-w-0 object-contain"
+          minHeightClassName="min-h-[200px] sm:min-h-[280px] md:min-h-[340px]"
         />
       </div>
     </section>

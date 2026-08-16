@@ -1,11 +1,9 @@
 import outcomeShowcase from "../../assets/Spark/outcome.svg";
+import ImageWithSkeleton from "../Reusable/ImageWithSkeleton";
 
 function OutcomeReflection() {
   return (
-    <section
-      id="outcome"
-      className="scroll-mt-24 pb-14 sm:pb-16 md:pb-20"
-    >
+    <section id="outcome" className="scroll-mt-24 pb-14 sm:pb-16 md:pb-20">
       <p className="text-[13px] sm:text-[14px] text-[#777777]">
         Outcome &amp; Reflection
       </p>
@@ -24,10 +22,12 @@ function OutcomeReflection() {
       </p>
 
       <div className="mt-6 sm:mt-8">
-        <img
+        <ImageWithSkeleton
           src={outcomeShowcase}
           alt="Spark homepage hero showcasing the Wear the Tradition campaign with navigation and product bundle callout"
-          className="w-full h-auto rounded-xl sm:rounded-2xl"
+          containerClassName="w-full rounded-xl sm:rounded-2xl"
+          imgClassName="w-full h-auto"
+          minHeightClassName="min-h-[240px] sm:min-h-[360px] md:min-h-[460px]"
         />
       </div>
     </section>

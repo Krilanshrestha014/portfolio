@@ -1,5 +1,6 @@
 import uiTopScreens from "../../assets/Spark/topui.svg";
 import uiBottomScreens from "../../assets/Spark/bottomui.svg";
+import ImageWithSkeleton from "../Reusable/ImageWithSkeleton";
 
 function UIDesign() {
   return (
@@ -21,18 +22,22 @@ function UIDesign() {
       </p>
 
       <div className="mt-6 sm:mt-8">
-        <img
+        <ImageWithSkeleton
           src={uiTopScreens}
           alt="Homepage hero and Our Candles product grid screens"
-          className="w-full h-auto rounded-xl sm:rounded-2xl"
+          containerClassName="w-full rounded-xl sm:rounded-2xl"
+          imgClassName="w-full h-auto"
+          minHeightClassName="min-h-[240px] sm:min-h-[360px] md:min-h-[460px]"
         />
       </div>
 
       <div className="mt-4 sm:mt-6">
-        <img
+        <ImageWithSkeleton
           src={uiBottomScreens}
           alt="Category cards and scent-finder quiz modal screens"
-          className="w-full h-auto rounded-xl sm:rounded-2xl"
+          containerClassName="w-full rounded-xl sm:rounded-2xl"
+          imgClassName="w-full h-auto"
+          minHeightClassName="min-h-[240px] sm:min-h-[360px] md:min-h-[460px]"
         />
       </div>
     </section>
