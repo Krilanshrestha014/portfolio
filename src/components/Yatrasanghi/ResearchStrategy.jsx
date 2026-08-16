@@ -1,4 +1,5 @@
 import researchImage from "../../assets/Yatra/Research.svg";
+import ImageWithSkeleton from "../Reusable/ImageWithSkeleton";
 
 function ResearchStrategy() {
   const steps = ["Discover", "Explore", "Understand", "Plan"];
@@ -36,10 +37,12 @@ function ResearchStrategy() {
 
       {/* Combined image */}
       <div className="mt-8 sm:mt-10 md:mt-12 w-full">
-        <img
+        <ImageWithSkeleton
           src={researchImage}
           alt="Destination discovery and recommendation screens"
-          className="w-full h-auto object-cover"
+          containerClassName="w-full"
+          imgClassName="w-full h-auto object-cover"
+          minHeightClassName="min-h-[240px] sm:min-h-[360px] md:min-h-[460px]"
         />
       </div>
     </section>

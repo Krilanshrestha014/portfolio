@@ -1,4 +1,5 @@
 import outcomeImage from "../../assets/Yatra/Outcome.svg";
+import ImageWithSkeleton from "../Reusable/ImageWithSkeleton";
 
 function OutcomeReflection() {
   return (
@@ -19,10 +20,12 @@ function OutcomeReflection() {
       </p>
 
       <div className="mt-8 sm:mt-10 md:mt-12 rounded-2xl overflow-hidden">
-        <img
+        <ImageWithSkeleton
           src={outcomeImage}
           alt="Laptop mockup showing the final Discover Nepal Your Way homepage"
-          className="w-full h-auto object-cover"
+          containerClassName="w-full"
+          imgClassName="w-full h-auto object-cover"
+          minHeightClassName="min-h-[240px] sm:min-h-[360px] md:min-h-[460px]"
         />
       </div>
     </section>

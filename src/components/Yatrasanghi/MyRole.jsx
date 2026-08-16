@@ -1,5 +1,5 @@
-
 import myRoleImage from "../../assets/Yatra/role.svg";
+import ImageWithSkeleton from "../Reusable/ImageWithSkeleton";
 
 function MyRole() {
   return (
@@ -17,10 +17,12 @@ function MyRole() {
       </p>
 
       <div className="mt-8 sm:mt-10 md:mt-12 relative rounded-2xl overflow-hidden bg-black">
-        <img
+        <ImageWithSkeleton
           src={myRoleImage}
           alt="My role — design collaboration screenshot"
-          className="w-full h-auto object-cover"
+          containerClassName="w-full"
+          imgClassName="w-full h-auto object-cover"
+          minHeightClassName="min-h-[240px] sm:min-h-[360px] md:min-h-[460px]"
         />
       </div>
     </section>

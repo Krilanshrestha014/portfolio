@@ -1,4 +1,5 @@
 import yatraLogo from "../../assets/Yatra/yatra.svg";
+import ImageWithSkeleton from "../Reusable/ImageWithSkeleton";
 
 function YatraOverview() {
   return (
@@ -19,10 +20,12 @@ function YatraOverview() {
       </p>
 
       <div className="mt-6 sm:mt-8 bg-neutral-100 rounded-md flex items-center justify-center py-8 sm:py-12 md:py-16 px-4 sm:px-6 md:px-8">
-        <img
+        <ImageWithSkeleton
           src={yatraLogo}
           alt="Yatrasanghi logo"
-          className="h-[100px] sm:h-[120px] md:h-[140px] lg:h-[280px] w-auto max-w-full"
+          containerClassName="h-[100px] sm:h-[120px] md:h-[140px] lg:h-[280px] w-auto max-w-full rounded"
+          imgClassName="h-full w-auto max-w-full object-contain"
+          minHeightClassName=""
         />
       </div>
     </section>
