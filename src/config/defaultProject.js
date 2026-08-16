@@ -1,6 +1,6 @@
 export const DEFAULT_RELATED_PROJECTS = [
   {
-    title: "Spark",
+    title: "Spark by Supriya",
     desc: "Building a focused productivity app that turns scattered tasks into daily momentum.",
     tags: ["Product Design", "Mobile App", "Figma"],
     accent: "#d67a3f",
