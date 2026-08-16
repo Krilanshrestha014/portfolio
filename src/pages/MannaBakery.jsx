@@ -32,7 +32,7 @@ const MannaBakery = () => {
         ]}
         description="Re-designing a mobile ordering experience for a faster, simpler bakery journey."
         ctaLabel="Visit Figma"
-        ctaHref="#"
+        ctaHref="https://www.figma.com/design/wACs6zUXz8AhLEXfnM900I/Manna-Bakery?node-id=2001-410&t=etHbkP0uP6ZR0VC2-1"
       />
 
       <div className="bg-[#ffffff] py-12 sm:py-24">

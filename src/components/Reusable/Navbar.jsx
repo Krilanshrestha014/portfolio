@@ -154,7 +154,9 @@ export default function Navbar({
 
       {/* header — full-bleed bar, content constrained to the same 1400px
           max width used by SelectedWork / RelatedCaseStudies so the logo,
-          menu button, and chat link line up with page content on laptop. */}
+          menu button, and chat link line up with page content on laptop.
+          Grid layout (not flex/justify-between) so the logo stays truly
+          centered on mobile regardless of hamburger vs. chat-button width. */}
       <header
         className="fixed top-0 left-0 right-0 z-[500] backdrop-blur-[10px] transition-colors duration-700 ease-[cubic-bezier(.25,.46,.45,.94)] font-['Switzer',sans-serif] border-b"
         style={{
@@ -163,12 +165,12 @@ export default function Navbar({
           borderBottomColor: navDark ? "rgba(245,242,234,0.12)" : "#0F0F0F14",
         }}
       >
-        <div className="w-full max-w-[1400px] mx-auto flex items-center justify-between px-6 md:px-16 py-[26px]">
+        <div className="w-full max-w-[1400px] mx-auto grid grid-cols-[auto_1fr_auto] items-center px-6 md:px-16 py-[26px]">
           <button
             type="button"
             aria-label="Toggle menu"
             onClick={() => setMobileOpen((v) => !v)}
-            className="relative z-[600] flex flex-col gap-[5px] w-[22px] py-1.5"
+            className="relative z-[600] flex flex-col gap-[5px] w-[22px] py-1.5 justify-self-start"
           >
             <span
               className="block h-0.5 w-full bg-current transition-transform duration-[450ms] ease-[cubic-bezier(.16,.8,.24,1)]"
@@ -184,11 +186,16 @@ export default function Navbar({
             />
           </button>
 
-          <a href="/" onClick={goHome} className="font-bold text-sm tracking-[0.14em] text-current cursor-pointer hover:opacity-80 transition-opacity">
+          <a
+            href="/"
+            onClick={goHome}
+            className="font-bold text-sm tracking-[0.14em] text-current cursor-pointer hover:opacity-80 transition-opacity justify-self-center"
+          >
             {logo}
           </a>
 
-          <span ref={chatWrapRef} className="inline-block">
+          {/* hidden on mobile — moved into the mobile nav overlay below */}
+          <span ref={chatWrapRef} className="hidden md:inline-block justify-self-end">
             <a
               ref={chatBtnRef}
               href="#contact"
@@ -229,6 +236,20 @@ export default function Navbar({
               </li>
             );
           })}
+
+          {/* "Let's chat" — only reachable via hamburger on mobile (hidden in header on mobile above) */}
+          <li className="md:hidden border-b border-[rgba(22,21,15,0.12)]">
+            <a
+              href="#contact"
+              onClick={goToSection("contact")}
+              className={`inline-flex items-center gap-2 font-bold text-[clamp(28px,5vw,40px)] tracking-[-0.02em] py-[18px] px-0.5 text-[#c07a45] transition-colors ${
+                mobileOpen ? "animate-[navIn_0.7s_cubic-bezier(.16,.8,.24,1)_forwards]" : "opacity-0"
+              }`}
+              style={mobileOpen ? { animationDelay: `${0.12 + NAV_LINKS.length * 0.08}s` } : undefined}
+            >
+              Let&apos;s chat <span className="text-2xl">→</span>
+            </a>
+          </li>
         </ul>
       </nav>
 
