@@ -35,7 +35,7 @@ const Yatrasanghi = () => {
         ]}
         description="Re-designing an AI-generated interface for a clearer travel discovery journey."
         ctaLabel="Visit Figma"
-        ctaHref="https://figma.com/your-link-here"
+        ctaHref="https://www.figma.com/design/X6L46vUqSQLGGbtRBDQjXc/Yatrasanghi?node-id=1-3&t=dKSvBbIKmkqXwQkb-1"
       />
 
       <div className="bg-[#ffffff] py-12 sm:py-24">

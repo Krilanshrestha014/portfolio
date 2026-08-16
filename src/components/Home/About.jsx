@@ -44,7 +44,7 @@ const About = forwardRef(function About(_props, ref) {
         <div className="max-w-[900px] mx-auto text-center">
           <p
             ref={aboutTextRef}
-            className="font-medium leading-[1.42] tracking-tight text-[40px]"
+            className="font-medium leading-[1.42] tracking-tight text-[22px] sm:text-[28px] md:text-[34px] lg:text-[40px]"
           >
             {ABOUT_WORDS.map((w, i) => (
               <span
