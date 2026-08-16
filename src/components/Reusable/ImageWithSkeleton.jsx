@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+
+const loadedImages = new Set();
 
 function ImageWithSkeleton({
   src,
@@ -7,7 +9,24 @@ function ImageWithSkeleton({
   containerClassName = "",
   minHeightClassName = "min-h-[220px] sm:min-h-[320px] md:min-h-[420px]",
 }) {
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(() => loadedImages.has(src));
+  const imgRef = useRef(null);
+
+  useEffect(() => {
+    if (loadedImages.has(src)) {
+      setLoaded(true);
+      return;
+    }
+    if (imgRef.current && imgRef.current.complete) {
+      loadedImages.add(src);
+      setLoaded(true);
+    }
+  }, [src]);
+
+  const handleLoad = () => {
+    loadedImages.add(src);
+    setLoaded(true);
+  };
 
   return (
     <div
@@ -15,17 +34,18 @@ function ImageWithSkeleton({
         loaded ? "" : minHeightClassName
       } ${containerClassName}`}
     >
-      <div
-        aria-hidden="true"
-        className={`absolute inset-0 bg-neutral-200 animate-pulse transition-opacity duration-300 ${
-          loaded ? "opacity-0" : "opacity-100"
-        }`}
-      />
+      {!loaded && (
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-neutral-200 animate-pulse"
+        />
+      )}
       <img
+        ref={imgRef}
         src={src}
         alt={alt}
         loading="lazy"
-        onLoad={() => setLoaded(true)}
+        onLoad={handleLoad}
         className={`${imgClassName} transition-opacity duration-500 ${
           loaded ? "opacity-100" : "opacity-0"
         }`}
