@@ -23,8 +23,8 @@ function OutcomeReflection() {
 
       {/* Two images, stacked top and bottom — each already contains a
           pair of screens side by side */}
-      <div className="mt-8 sm:mt-10 md:mt-12 flex flex-col gap-4 sm:gap-5 md:gap-6">
-        <div className="rounded-2xl sm:rounded-3xl overflow-hidden">
+      <div className="mt-8 sm:mt-10 md:mt-12 flex flex-col gap-2 sm:gap-2 md:gap-2">
+        <div className="rounded-xl sm:rounded-2xl overflow-hidden">
           <ImageWithSkeleton
             src={outcomeTop}
             alt="Home and product detail screen mockups held in hand"
@@ -33,7 +33,7 @@ function OutcomeReflection() {
             minHeightClassName="min-h-[220px] sm:min-h-[320px] md:min-h-[400px]"
           />
         </div>
-        <div className="rounded-2xl sm:rounded-3xl overflow-hidden">
+        <div className="rounded-xl sm:rounded-2xl overflow-hidden">
           <ImageWithSkeleton
             src={outcomeBottom}
             alt="Cart and checkout screen mockups held in hand"

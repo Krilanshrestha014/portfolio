@@ -1,4 +1,4 @@
-import researchImage from "../../assets/Yatra/Research.svg";
+import researchImage from "../../assets/Manna/research.svg";
 import ImageWithSkeleton from "../Reusable/ImageWithSkeleton";
 
 function ResearchStrategy() {
