@@ -1,4 +1,5 @@
 import researchImage from "../../assets/Spark/research.svg";
+import ImageWithSkeleton from "../Reusable/ImageWithSkeleton";
 
 function TheResearch() {
   return (
@@ -19,10 +20,12 @@ function TheResearch() {
       </p>
 
       <div className="mt-6 sm:mt-8">
-        <img
+        <ImageWithSkeleton
           src={researchImage}
           alt="Video call screenshot showing stakeholder discussion with Pranish, Krilan, and the Spark brand logo"
-          className="w-full h-auto rounded-xl sm:rounded-2xl"
+          containerClassName="w-full rounded-xl sm:rounded-2xl"
+          imgClassName="w-full h-auto"
+          minHeightClassName="min-h-[240px] sm:min-h-[360px] md:min-h-[460px]"
         />
       </div>
     </section>
