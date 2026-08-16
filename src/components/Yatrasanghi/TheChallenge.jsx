@@ -1,6 +1,7 @@
 import Slot1 from "../../assets/Yatra/Slot1.svg";
 import Slot2 from "../../assets/Yatra/Slot2.svg";
 import Slot3 from "../../assets/Yatra/Slot3.svg";
+import ImageWithSkeleton from "../Reusable/ImageWithSkeleton";
 
 function TheChallenge() {
   const challenges = [
@@ -51,11 +52,13 @@ function TheChallenge() {
             </p>
 
             {/* Preview image */}
-            <div className="mt-6 sm:mt-8  rounded-2xl overflow-hidden bg-white">
-              <img
+            <div className="mt-6 sm:mt-8 rounded-2xl overflow-hidden bg-white">
+              <ImageWithSkeleton
                 src={image}
                 alt={`${title} preview`}
-                className="w-full h-auto object-contain"
+                containerClassName="w-full"
+                imgClassName="w-full h-auto object-contain"
+                minHeightClassName="min-h-[220px] sm:min-h-[300px] md:min-h-[360px]"
               />
             </div>
           </div>

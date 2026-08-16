@@ -1,4 +1,5 @@
 import collaborationImage from "../../assets/Yatra/Collaboration.svg";
+import ImageWithSkeleton from "../Reusable/ImageWithSkeleton";
 
 function CollaborationDevelopment() {
   return (
@@ -18,10 +19,12 @@ function CollaborationDevelopment() {
       </p>
 
       <div className="mt-8 sm:mt-10 md:mt-12 rounded-2xl overflow-hidden">
-        <img
+        <ImageWithSkeleton
           src={collaborationImage}
           alt="Figma collaboration board with developer annotations"
-          className="w-full h-auto object-cover"
+          containerClassName="w-full"
+          imgClassName="w-full h-auto object-cover"
+          minHeightClassName="min-h-[240px] sm:min-h-[360px] md:min-h-[460px]"
         />
       </div>
     </section>

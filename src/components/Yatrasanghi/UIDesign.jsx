@@ -1,6 +1,7 @@
 import row1 from "../../assets/Yatra/Container.svg";
 import row2 from "../../assets/Yatra/Container1.svg";
 import row3 from "../../assets/Yatra/Container2.svg";
+import ImageWithSkeleton from "../Reusable/ImageWithSkeleton";
 
 function UIDesign() {
   const rows = [row1, row2, row3];
@@ -21,11 +22,13 @@ function UIDesign() {
 
       <div className="mt-8 sm:mt-10 md:mt-12 flex flex-col gap-4 sm:gap-6">
         {rows.map((row, i) => (
-          <img
+          <ImageWithSkeleton
             key={i}
             src={row}
             alt={`UI design before and after comparison ${i + 1}`}
-            className="w-full h-auto"
+            containerClassName="w-full"
+            imgClassName="w-full h-auto"
+            minHeightClassName="min-h-[200px] sm:min-h-[300px] md:min-h-[380px]"
           />
         ))}
       </div>

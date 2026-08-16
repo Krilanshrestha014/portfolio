@@ -1,4 +1,5 @@
 import structureImage from "../../assets/Yatra/structure.svg";
+import ImageWithSkeleton from "../Reusable/ImageWithSkeleton";
 
 function StructureWireframes() {
   return (
@@ -19,10 +20,12 @@ function StructureWireframes() {
       </p>
 
       <div className="mt-8 sm:mt-10 md:mt-12 w-full">
-        <img
+        <ImageWithSkeleton
           src={structureImage}
           alt="Destination discovery and recommendation screens"
-          className="w-full h-auto object-cover"
+          containerClassName="w-full"
+          imgClassName="w-full h-auto object-cover"
+          minHeightClassName="min-h-[240px] sm:min-h-[360px] md:min-h-[460px]"
         />
       </div>
     </section>
