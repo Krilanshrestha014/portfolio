@@ -71,7 +71,6 @@ const Hero = forwardRef(function Hero(_props, ref) {
             <a
               href="#work"
               data-magnet-target
-              {...hoverCursor("View")}
               className="inline-flex items-center gap-1.5 px-6 py-[15px] text-sm font-medium transition-all duration-500 hover:rounded-xl"
               style={{ background: "var(--ink)", color: "var(--cream)" }}
             >

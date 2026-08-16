@@ -58,7 +58,7 @@ const Spark = () => {
       </div>
 
       <RelatedCaseStudies
-        projects={DEFAULT_RELATED_PROJECTS.filter((p) => p.title !== "Spark")}
+        projects={DEFAULT_RELATED_PROJECTS.filter((p) => p.title !== "Spark by Supriya")}
       />
     </div>
   );

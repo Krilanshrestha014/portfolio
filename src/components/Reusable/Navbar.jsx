@@ -15,6 +15,8 @@ const NAV_LINKS = [
   { label: "Contact", id: "contact" },
 ];
 
+const CONTACT_EMAIL = "krilanshrestha@gmail.com";
+
 export default function Navbar({
   sections = DEFAULT_SECTIONS,
   logo = "KRILAN",
@@ -140,6 +142,9 @@ export default function Navbar({
     }
   };
 
+  // "Let's chat" — opens the user's email client instead of scrolling to #contact
+  const closeMobileNav = () => setMobileOpen(false);
+
   return (
     <>
       {/* corner dots */}
@@ -151,12 +156,7 @@ export default function Navbar({
         className="fixed top-[30px] right-[22px] w-[5px] h-[5px] rounded-full z-[499] transition-colors duration-700 ease-[cubic-bezier(.25,.46,.45,.94)]"
         style={{ background: navDark ? "rgba(245,242,234,0.35)" : "rgba(22,21,15,0.25)" }}
       />
-
-      {/* header — full-bleed bar, content constrained to the same 1400px
-          max width used by SelectedWork / RelatedCaseStudies so the logo,
-          menu button, and chat link line up with page content on laptop.
-          Grid layout (not flex/justify-between) so the logo stays truly
-          centered on mobile regardless of hamburger vs. chat-button width. */}
+      
       <header
         className="fixed top-0 left-0 right-0 z-[500] backdrop-blur-[10px] transition-colors duration-700 ease-[cubic-bezier(.25,.46,.45,.94)] font-['Switzer',sans-serif] border-b"
         style={{
@@ -198,8 +198,7 @@ export default function Navbar({
           <span ref={chatWrapRef} className="hidden md:inline-block justify-self-end">
             <a
               ref={chatBtnRef}
-              href="#contact"
-              onClick={goToSection("contact")}
+              href={`mailto:${CONTACT_EMAIL}`}
               data-cursor="Chat"
               className="inline-flex items-center gap-1.5 text-sm border-b border-[#c07a45] pb-0.5 text-[#c07a45] transition-opacity duration-300 group"
             >
@@ -237,11 +236,12 @@ export default function Navbar({
             );
           })}
 
-          {/* "Let's chat" — only reachable via hamburger on mobile (hidden in header on mobile above) */}
+          {/* "Let's chat" — only reachable via hamburger on mobile (hidden in header on mobile above),
+              opens the user's email client with the contact address pre-filled */}
           <li className="md:hidden border-b border-[rgba(22,21,15,0.12)]">
             <a
-              href="#contact"
-              onClick={goToSection("contact")}
+              href={`mailto:${CONTACT_EMAIL}`}
+              onClick={closeMobileNav}
               className={`inline-flex items-center gap-2 font-bold text-[clamp(28px,5vw,40px)] tracking-[-0.02em] py-[18px] px-0.5 text-[#c07a45] transition-colors ${
                 mobileOpen ? "animate-[navIn_0.7s_cubic-bezier(.16,.8,.24,1)_forwards]" : "opacity-0"
               }`}
