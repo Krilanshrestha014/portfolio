@@ -1,4 +1,5 @@
 import researchImage from "../../assets/Yatra/Research.svg";
+import ImageWithSkeleton from "../Reusable/ImageWithSkeleton";
 
 function ResearchStrategy() {
   return (
@@ -22,10 +23,12 @@ function ResearchStrategy() {
           full-bleed image, matching the boxed screenshot/annotation
           style from the reference */}
       <div className="mt-8 sm:mt-10 md:mt-12 w-full rounded-2xl sm:rounded-3xl bg-[#F5F5F5] p-3 sm:p-5 md:p-6">
-        <img
+        <ImageWithSkeleton
           src={researchImage}
           alt="Destination discovery and recommendation screens"
-          className="w-full h-auto object-cover rounded-xl sm:rounded-2xl"
+          containerClassName="w-full rounded-xl sm:rounded-2xl"
+          imgClassName="w-full h-auto object-cover"
+          minHeightClassName="min-h-[240px] sm:min-h-[360px] md:min-h-[460px]"
         />
       </div>
     </section>
